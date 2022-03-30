@@ -109,6 +109,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.virtualenv/
 
 # Spyder project settings
 .spyderproject
@@ -127,3 +128,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#vim swapfiles
+*.swp
+
+#random testing files
+credentials.txt
+stuff_results.txt
+
