@@ -133,6 +133,6 @@ dmypy.json
 *.swp
 
 #random testing files
-credentials.txt
+credentials*.txt
 stuff_results.txt
 
