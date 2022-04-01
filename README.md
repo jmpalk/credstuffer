@@ -68,7 +68,7 @@ attempt to avoid accounts being locked out during testing.
 When testing against `https://login.microsoft.com`, credstuffer will identify
 successful logins, as well as logins where the user is disabled, has some forms
 of MFA enabled, or the password is expired (error code identification cribbed 
-from dafthack's [MSOLSpray](https://github.com/dafthack/MSOLSpray). Credstuffer
+from dafthack's [MSOLSpray](https://github.com/dafthack/MSOLSpray)). Credstuffer
 will also detect the occurence of lockouts and prompt the user to see whether 
 they want to continue if more than 10 lockouts are detected. Credstuffer will
 also track whether accounts have been locked out, do not exist, or have had
