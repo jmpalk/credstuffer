@@ -74,14 +74,46 @@ also track whether accounts have been locked out, do not exist, or have had
 their password identified and remove that account from further testing cycles
 to save time and further reduce the risk of lockouts.
 
-When testing against a non-standard endpoint, a user can supply either a 
-HTTP status code or a keyword in the response indicating a successful login
-attempt. If the user supplies one of these, credspray will log successful 
-attempts in the output file. If the user does not supply a success condition,
-credspray will log all authentication attemps with a selection of metadata,
-including HTTP status code, redirect URL (if present), response length, and
-whether certain words indicating a failed login were detected, so the user
-can analyze the results to identify successful login attempts.
+To avoid detection by Microsoft or other service providers, the user can
+provide a credstuffer with a custom URL targeting a [fireprox](https://github.com/ustayready/fireprox) proxy using the `-u` flag. When if targeting the standard MS endpoint, fireprox
+should be configured to target `https://login.microsoft.com`, and only
+the fireprox URL should be provided; credstuffer will automatically append
+`common/oauth2/token`. When targeting custom services, the user-supplied URL
+should include the entire targeted URL, 
 
+When testing against a non-standard endpoint, a user may choose to supply either a 
+HTTP status code (`-c`) or a keyword (`-k`) in the response indicating a
+successful login attempt. If the user supplies one of these, credspray will log
+successful attempts in the output file. If the user does not supply a success
+condition, credspray will log all authentication attemps with a selection of
+metadata, including HTTP status code, redirect URL (if present), response
+length, and whether certain words indicating a failed login were detected, so
+the user can analyze the results to identify successful login attempts.
+
+## Spray Mode
 Credstuffer can also be run as a standard password spraying tool, by supplying
 a password on the commandline with the `-s` flag.
+
+## Custom URLs and Fireprox
+
+A user can target a custom URL using the `-u` flag. By itself, this can be used
+to route credstuffer requests through a [fireprox](https://github.com/ustayready/fireprox) proxy, in order to avoid 
+throttling by Microsoft or another service provider. When using credstuffer 
+with fireprox to target the default MS endpoint, the url should contain only
+the URL of the fireprox proxy; credstuffer will automatically append 
+`common/oauth2/token`. 
+e.g:
+```
+$ ./credstuffer.py -i credentials.txt -u https://<fireprox-api-id>.execute-api.us-east-1.amazonaws.com/fireprox/
+```
+If using credstuffer with the `-t` flag to target a custom service, the 
+provided URL should include the specific endpoint being targeted. e.g.:
+```
+$ ./credstuffer.py -i credentials.txt -t -u https://some-vpn.fakedomain.com/vpn/login -u user -p password -c 200
+```
+or
+```
+$ ./credstuffer.py -i credentials.txt -t -u https://<fireprox-api-id>.execute-api.us-east-1.amazonaws.com/vpn/login -u user -p password -c 200
+```
+
+
