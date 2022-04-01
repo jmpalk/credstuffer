@@ -53,15 +53,16 @@ $ pip install -r requirements.txt
 Credstuffer is a script specifically designed for performing [credential-stuffing](https://owasp.org/www-community/attacks/Credential_stuffing)
 attacks where you may have more than one possible password for a given
 user. By default, credstuffer will stuff credentials into 
-`https://login.microsoft.com`, but you can give it a custom endpoint and define
-custom username and password parameters to use. If you identify an anti-csrf 
-token in the login page, you can also pass that to credstuffer and it will
-attempt to extract the token to make well-formed login submissions.
+`https://login.microsoft.com`, but it can also take a custom url and custom
+username and password parameters to use in targeting other services such as
+web-based VPN portals. If you identify an anti-csrf token in the login page,
+you can also pass that parameter to credstuffer and it will attempt to extract
+the token to make well-formed login submissions.
 
 Given a comma-separated list of username/password pairs, credstuffer will
 iterate through the list, trying each user once in a given cycle, then 
 wait a user-specified number of minutes (default 15) before launching the next
-round of authentication attempts. Credstuffer implments this delay in order to
+round of authentication attempts. Credstuffer implements this delay in order to
 attempt to avoid accounts being locked out during testing. 
 
 When testing against `https://login.microsoft.com`, credstuffer will identify
