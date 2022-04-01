@@ -74,13 +74,6 @@ also track whether accounts have been locked out, do not exist, or have had
 their password identified and remove that account from further testing cycles
 to save time and further reduce the risk of lockouts.
 
-To avoid detection by Microsoft or other service providers, the user can
-provide a credstuffer with a custom URL targeting a [fireprox](https://github.com/ustayready/fireprox) proxy using the `-u` flag. When if targeting the standard MS endpoint, fireprox
-should be configured to target `https://login.microsoft.com`, and only
-the fireprox URL should be provided; credstuffer will automatically append
-`common/oauth2/token`. When targeting custom services, the user-supplied URL
-should include the entire targeted URL, 
-
 When testing against a non-standard endpoint, a user may choose to supply either a 
 HTTP status code (`-c`) or a keyword (`-k`) in the response indicating a
 successful login attempt. If the user supplies one of these, credspray will log
