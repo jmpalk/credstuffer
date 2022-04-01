@@ -103,11 +103,11 @@ $ ./credstuffer.py -i credentials.txt -u https://<fireprox-api-id>.execute-api.u
 If using credstuffer with the `-t` flag to target a custom service, the 
 provided URL should include the specific endpoint being targeted. e.g.:
 ```
-$ ./credstuffer.py -i credentials.txt -t -u https://some-vpn.fakedomain.com/vpn/login -u user -p password -c 200
+$ ./credstuffer.py -i credentials.txt -t -u https://some-vpn.fakedomain.com/vpn/login -n user -p password -c 200
 ```
 or
 ```
-$ ./credstuffer.py -i credentials.txt -t -u https://<fireprox-api-id>.execute-api.us-east-1.amazonaws.com/vpn/login -u user -p password -c 200
+$ ./credstuffer.py -i credentials.txt -t -u https://<fireprox-api-id>.execute-api.us-east-1.amazonaws.com/vpn/login -n user -p password -c 200
 ```
 
 
