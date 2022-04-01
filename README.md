@@ -50,7 +50,7 @@ $ cd credstuffer
 $ pip install -r requirements.txt
 ```
 ## Description
-Credstuffer is a script specifically designed for performing (credential-stuffing)[https://owasp.org/www-community/attacks/Credential_stuffing]
+Credstuffer is a script specifically designed for performing [credential-stuffing](https://owasp.org/www-community/attacks/Credential_stuffing)
 attacks where you may have more than one possible password for a given
 user. By default, credstuffer will stuff credentials into 
 `https://login.microsoft.com`, but you can give it a custom endpoint and define
